@@ -147,7 +147,7 @@ function NugInterrupts.COMBAT_LOG_EVENT_UNFILTERED( self, event, timestamp, even
 
     
     if eventType == "SPELL_CAST_SUCCESS" then 
-        if bit_band(srcFlags, COMBATLOG_OBJECT_AFFILIATION_MASK) <= AFFILIATION_PARTY and spells[spellID] then
+        if bit_band(srcFlags, COMBATLOG_OBJECT_AFFILIATION_MASK) <= AFFILIATION_PARTY_OR_RAID and spells[spellID] then
             local timer = FindTimer(srcGUID, spellID) or self:CreateTimer()
             timer:Start(spellID, srcGUID, spells[spellID] )
         end
