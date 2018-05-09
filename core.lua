@@ -104,15 +104,12 @@ function NugInterrupts:PLAYER_LOGIN()
     NugInterruptsDB = _G.NugInterruptsDB
     SetupDefaults(NugInterruptsDB, defaults)
 
-        -- local npheader = NugInterrupts:CreateNameplateCastbars()
-        -- NugInterruptsPlayerNameplateHeader = npheader
     anchor = self:CreateAnchor(NugInterruptsDB.anchor)
     self:SetSize(5,5)
     self:SetPoint("TOPLEFT", anchor, "BOTTOMRIGHT",0,0)
-    self:Arrange()
-        -- npheader:SetPoint("TOPLEFT", nameplates_anchor,"BOTTOMRIGHT",0,0)
-        -- -- npheader:SetPoint("CENTER", UIParent, "CENTER",0,0)
-        -- anchors["nameplates"] = nameplates_anchor
+    -- self:Arrange()
+
+    ghost_duration = NugInterruptsDB.ghostDuration
 
     self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 
@@ -591,6 +588,19 @@ function NugInterrupts:CreateGUI()
                                 end,
                                 values = LSM:HashTable("statusbar"),
                                 dialogControl = "LSM30_Statusbar",
+                            },
+                            ghostDuration = {
+                                name = "Ghost Duration",
+                                type = "range",
+                                get = function(info) return NugInterruptsDB.ghostDuration end,
+                                set = function(info, v)
+                                    NugInterruptsDB.ghostDuration = tonumber(v)
+                                    ghost_duration = NugInterruptsDB.ghostDuration
+                                end,
+                                min = 3,
+                                max = 120,
+                                step = 1,
+                                order = 3,
                             },
                         },
                     },
