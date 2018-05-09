@@ -10,4 +10,4 @@ Libs\AceConfig-3.0\AceConfig-3.0.xml
 Libs\LibSharedMedia-3.0\lib.xml
 Libs\AceGUI-3.0-SharedMediaWidgets\widget.xml
 
-core.lua
+NugInterrupts.lua
