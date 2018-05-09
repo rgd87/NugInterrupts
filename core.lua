@@ -111,7 +111,9 @@ function NugInterrupts:PLAYER_LOGIN()
 
     ghost_duration = NugInterruptsDB.ghostDuration
 
-    self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+    self:RegisterEvent("GROUP_ROSTER_UPDATE")
+    -- self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+    self:GROUP_ROSTER_UPDATE()
 
     SLASH_NUGINTERRUPTS1= "/nuginterrupts"
     SLASH_NUGINTERRUPTS2= "/nint"
@@ -139,6 +141,15 @@ local function FindTimer(srcGUID, spellID)
 end
 
 
+function NugInterrupts:GROUP_ROSTER_UPDATE()
+    if IsInGroup() and not IsInRaid() then
+        self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+    else
+        self:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+    end
+end
+
+
 local bit_band = bit.band
 function NugInterrupts.COMBAT_LOG_EVENT_UNFILTERED( self, event, timestamp, eventType, hideCaster,
     srcGUID, srcName, srcFlags, srcFlags2,
@@ -147,7 +158,7 @@ function NugInterrupts.COMBAT_LOG_EVENT_UNFILTERED( self, event, timestamp, even
 
     
     if eventType == "SPELL_CAST_SUCCESS" then 
-        if bit_band(srcFlags, COMBATLOG_OBJECT_AFFILIATION_MASK) <= AFFILIATION_PARTY_OR_RAID and spells[spellID] then
+        if bit_band(srcFlags, COMBATLOG_OBJECT_AFFILIATION_MASK) <= AFFILIATION_PARTY and spells[spellID] then
             local timer = FindTimer(srcGUID, spellID) or self:CreateTimer()
             timer:Start(spellID, srcGUID, spells[spellID] )
         end
