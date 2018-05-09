@@ -17,6 +17,9 @@ local active = {}
 
 local anchor
 local ghost_duration = 30
+local showSolo = false
+local showGroup = true
+local showRaid = false
 
 local RAID_CLASS_COLORS = RAID_CLASS_COLORS
 
@@ -59,6 +62,9 @@ local defaults = {
     timeFontSize = 10,
     ghostDuration = 30,
     textColor = {1,1,1,0.5},
+    showSolo = false,
+    showGroup = true,
+    showRaid = false,
 }
 
 local function SetupDefaults(t, defaults)
@@ -110,6 +116,9 @@ function NugInterrupts:PLAYER_LOGIN()
     -- self:Arrange()
 
     ghost_duration = NugInterruptsDB.ghostDuration
+    showSolo = NugInterruptsDB.showSolo
+    showGroup = NugInterruptsDB.showGroup
+    showRaid = NugInterruptsDB.showRaid
 
     self:RegisterEvent("GROUP_ROSTER_UPDATE")
     -- self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
@@ -142,7 +151,11 @@ end
 
 
 function NugInterrupts:GROUP_ROSTER_UPDATE()
-    if IsInGroup() and not IsInRaid() then
+    if showRaid and IsInRaid() then
+        self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+    elseif showGroup and IsInGroup() then
+        self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+    elseif showSolo and not IsInGroup() then
         self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
     else
         self:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
@@ -171,6 +184,10 @@ function NugInterrupts:FindUnitByGUID(srcGUID)
         local unit = "party"..i
         if UnitGUID(unit) == srcGUID then return unit end
     end
+    -- for i=1, 39 do
+    --     local unit = "raid"..i
+    --     if UnitGUID(unit) == srcGUID then return unit end
+    -- end
 end
 
 local function TimerOnUpdate(self, elapsed)
@@ -561,6 +578,48 @@ function NugInterrupts:CreateGUI()
                     NugInterrupts:ResizeText()
                 end,
                 order = 3,
+            },
+            toggleGroup = {
+                        
+                type = "group",
+                guiInline = true,
+                name = " ",
+                order = 4,
+                args = {
+                    showSolo = {
+                        name = "Show Solo",
+                        type = "toggle",
+                        order = 1,
+                        get = function(info) return NugInterruptsDB.showSolo end,
+                        set = function(info, v)
+                            NugInterruptsDB.showSolo = not NugInterruptsDB.showSolo
+                            showSolo = NugInterruptsDB.showSolo
+                            NugInterrupts:GROUP_ROSTER_UPDATE()
+                        end
+                    },
+                    showGroup = {
+                        name = "Show Group",
+                        type = "toggle",
+                        order = 2,
+                        get = function(info) return NugInterruptsDB.showGroup end,
+                        set = function(info, v)
+                            NugInterruptsDB.showGroup = not NugInterruptsDB.showGroup
+                            showGroup = NugInterruptsDB.showGroup
+                            NugInterrupts:GROUP_ROSTER_UPDATE()
+                        end
+                    },
+                    showRaid = {
+                        name = "Show Raid",
+                        type = "toggle",
+                        order = 3,
+                        get = function(info) return NugInterruptsDB.showRaid end,
+                        set = function(info, v)
+                            NugInterruptsDB.showRaid = not NugInterruptsDB.showRaid
+                            showRaid = NugInterruptsDB.showRaid
+                            NugInterrupts:GROUP_ROSTER_UPDATE()
+                        end
+                    },
+                },
             },
             anchors = {
                 type = "group",
