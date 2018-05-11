@@ -53,15 +53,15 @@ local defaults = {
         x = -50,
         y = -137,
     },
-    width = 180,
-    height = 23,
+    width = 150,
+    height = 20,
     barTexture = "Aluminium",
     spellFont = "ClearFont",
-    spellFontSize = 13,
+    spellFontSize = 12,
     timeFont = "ClearFont",
     timeFontSize = 10,
     ghostDuration = 30,
-    textColor = {1,1,1,0.5},
+    textColor = {1,1,1,0.7},
     showSolo = false,
     showGroup = true,
     showRaid = false,
@@ -275,9 +275,9 @@ end
 
 local function ChangeToGhost(self)
     -- self:SetColor(0.5,0,0)
-    self.spellText:SetText("Ready")
+    -- self.spellText:SetText("Ready")
     self.timeText:SetText("")
-    self.bar:SetValue(0)
+    -- self.bar:SetValue(0)
 end
 
 local function TimerBecomeGhost(self)
@@ -325,7 +325,7 @@ function NugInterrupts.CreateTimer(self)
     }
 
     f:SetBackdrop(backdrop)
-    f:SetBackdropColor(0, 0, 0, 0.7)
+    f:SetBackdropColor(0, 0, 0, 1)
 
     local ic = CreateFrame("Frame",nil,f)
     ic:SetPoint("TOPLEFT",f,"TOPLEFT", 0, 0)
