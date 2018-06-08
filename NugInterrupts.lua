@@ -26,6 +26,7 @@ local RAID_CLASS_COLORS = RAID_CLASS_COLORS
 local COMBATLOG_OBJECT_AFFILIATION_MASK = COMBATLOG_OBJECT_AFFILIATION_MASK
 local AFFILIATION_PARTY_OR_RAID = COMBATLOG_OBJECT_AFFILIATION_RAID + COMBATLOG_OBJECT_AFFILIATION_PARTY
 local AFFILIATION_PARTY = COMBATLOG_OBJECT_AFFILIATION_PARTY
+local ACCEPTED_AFFILIATION = AFFILIATION_PARTY
 
 spells = {
     [47528]  = { cooldown = 15, class = "DEATHKNIGHT" }, --Mind Freeze
@@ -152,8 +153,10 @@ end
 
 function NugInterrupts:GROUP_ROSTER_UPDATE()
     if showRaid and IsInRaid() then
+        ACCEPTED_AFFILIATION = AFFILIATION_PARTY_OR_RAID
         self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
     elseif showGroup and IsInGroup() then
+        ACCEPTED_AFFILIATION = AFFILIATION_PARTY
         self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
     elseif showSolo and not IsInGroup() then
         self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
@@ -164,11 +167,12 @@ end
 
 
 local bit_band = bit.band
-function NugInterrupts.COMBAT_LOG_EVENT_UNFILTERED( self, event, timestamp, eventType, hideCaster,
+function NugInterrupts.COMBAT_LOG_EVENT_UNFILTERED( self, event)
+
+    local timestamp, eventType, hideCaster,
     srcGUID, srcName, srcFlags, srcFlags2,
     dstGUID, dstName, dstFlags, dstFlags2,
-    spellID, spellName, spellSchool, auraType, amount)
-
+    spellID, spellName, spellSchool, auraType, amount = CombatLogGetCurrentEventInfo()
     
     if eventType == "SPELL_CAST_SUCCESS" then 
         if bit_band(srcFlags, COMBATLOG_OBJECT_AFFILIATION_MASK) <= AFFILIATION_PARTY and spells[spellID] then
