@@ -32,7 +32,7 @@ spells = {
     [47528]  = { cooldown = 15, class = "DEATHKNIGHT" }, --Mind Freeze
     [106839] = { cooldown = 15, class = "DRUID" }, --Skull Bash
     [78675]  = { cooldown = 60, class = "DRUID" }, --Solar Beam
-    [183752] = { cooldown = 15, class = "DEMONHUNTER" }, --Consume Magic
+    [183752] = { cooldown = 15, class = "DEMONHUNTER" }, --Disrupt
     [147362] = { cooldown = 24, class = "HUNTER" }, --Counter Shot
     [187707] = { cooldown = 15, class = "HUNTER" }, --Muzzle
     [2139]   = { cooldown = 24, class = "MAGE" }, --Counter Spell
@@ -42,8 +42,10 @@ spells = {
     [1766]   = { cooldown = 15, class = "ROGUE" }, --Kick
     [57994] = { cooldown = 12, class = "SHAMAN" }, --Wind Shear
     [6552]  = { cooldown = 15, class = "WARRIOR" }, --Pummel
-    [171140] = { cooldown = 24, class = "WARLOCK" }, --Shadow Lock
-    [171138] = { cooldown = 24, class = "WARLOCK" }, --Shadow Lock if used from pet bar    
+    [119910] = { cooldown = 24, class = "WARLOCK" }, --Spell Lock
+    [19647] = { cooldown = 24, class = "WARLOCK" }, --Spell Lock used from pet bar
+    [132409] = { cooldown = 24, class = "WARLOCK" }, --Spell Lock when from sacrificed felhunter
+    [212619] = { cooldown = 24, class = "WARLOCK" }, --Call Felhunter, Demonology pvp talent
 }
 
 local defaults = {
