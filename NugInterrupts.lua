@@ -28,25 +28,58 @@ local AFFILIATION_PARTY_OR_RAID = COMBATLOG_OBJECT_AFFILIATION_RAID + COMBATLOG_
 local AFFILIATION_PARTY = COMBATLOG_OBJECT_AFFILIATION_PARTY
 local ACCEPTED_AFFILIATION = AFFILIATION_PARTY
 
-spells = {
-    [47528]  = { cooldown = 15, class = "DEATHKNIGHT" }, --Mind Freeze
-    [106839] = { cooldown = 15, class = "DRUID" }, --Skull Bash
-    [78675]  = { cooldown = 60, class = "DRUID" }, --Solar Beam
-    [183752] = { cooldown = 15, class = "DEMONHUNTER" }, --Disrupt
-    [147362] = { cooldown = 24, class = "HUNTER" }, --Counter Shot
-    [187707] = { cooldown = 15, class = "HUNTER" }, --Muzzle
-    [2139]   = { cooldown = 24, class = "MAGE" }, --Counter Spell
-    [116705] = { cooldown = 15, class = "MONK" }, --Spear Hand Strike
-    [96231]  = { cooldown = 15, class = "PALADIN" }, --Rebuke
-    [15487]  = { cooldown = 45, class = "PRIEST" }, --Silence
-    [1766]   = { cooldown = 15, class = "ROGUE" }, --Kick
-    [57994] = { cooldown = 12, class = "SHAMAN" }, --Wind Shear
-    [6552]  = { cooldown = 15, class = "WARRIOR" }, --Pummel
-    [119910] = { cooldown = 24, class = "WARLOCK" }, --Spell Lock
-    [19647] = { cooldown = 24, class = "WARLOCK" }, --Spell Lock used from pet bar
-    [132409] = { cooldown = 24, class = "WARLOCK" }, --Spell Lock when from sacrificed felhunter
-    [212619] = { cooldown = 24, class = "WARLOCK" }, --Call Felhunter, Demonology pvp talent
-}
+local isClassic = select(4,GetBuildInfo()) <= 19999
+local spells
+if isClassic then
+    spells = {
+        [19244] = { cooldown = 30, class = "WARLOCK" }, -- Spell Lock Rank 1
+        [19647] = { cooldown = 30, class = "WARLOCK" }, -- Spell Lock Rank 2
+
+        [8042] = { cooldown = 6, class = "SHAMAN" }, -- Earth Shock
+        [8044] = { cooldown = 6, class = "SHAMAN" }, -- Earth Shock
+        [8045] = { cooldown = 6, class = "SHAMAN" }, -- Earth Shock
+        [8046] = { cooldown = 6, class = "SHAMAN" }, -- Earth Shock
+        [10412] = { cooldown = 6, class = "SHAMAN" }, -- Earth Shock
+        [10413] = { cooldown = 6, class = "SHAMAN" }, -- Earth Shock
+        [10414] = { cooldown = 6, class = "SHAMAN" }, -- Earth Shock
+
+        [16979] = { cooldown = 15, class = "DRUID" }, -- Feral Charge
+
+        [2139] = { cooldown = 30, class = "MAGE" }, -- Counterspell
+
+        [1766] = { cooldown = 10, class = "ROGUE" }, -- Kick
+        [1767] = { cooldown = 10, class = "ROGUE" }, -- Kick
+        [1768] = { cooldown = 10, class = "ROGUE" }, -- Kick
+        [1769] = { cooldown = 10, class = "ROGUE" }, -- Kick
+
+        [6552] = { cooldown = 10, class = "WARRIOR" }, -- Pummel
+        [6554] = { cooldown = 10, class = "WARRIOR" }, -- Pummel
+
+        [72] = { cooldown = 12, class = "WARRIOR" }, -- Shield Bash
+        [1671] = { cooldown = 12, class = "WARRIOR" }, -- Shield Bash
+        [1672] = { cooldown = 12, class = "WARRIOR" }, -- Shield Bash
+    }
+else
+    spells = {
+        [47528]  = { cooldown = 15, class = "DEATHKNIGHT" }, --Mind Freeze
+        [106839] = { cooldown = 15, class = "DRUID" }, --Skull Bash
+        [78675]  = { cooldown = 60, class = "DRUID" }, --Solar Beam
+        [183752] = { cooldown = 15, class = "DEMONHUNTER" }, --Disrupt
+        [147362] = { cooldown = 24, class = "HUNTER" }, --Counter Shot
+        [187707] = { cooldown = 15, class = "HUNTER" }, --Muzzle
+        [2139]   = { cooldown = 24, class = "MAGE" }, --Counter Spell
+        [116705] = { cooldown = 15, class = "MONK" }, --Spear Hand Strike
+        [96231]  = { cooldown = 15, class = "PALADIN" }, --Rebuke
+        [15487]  = { cooldown = 45, class = "PRIEST" }, --Silence
+        [1766]   = { cooldown = 15, class = "ROGUE" }, --Kick
+        [57994] = { cooldown = 12, class = "SHAMAN" }, --Wind Shear
+        [6552]  = { cooldown = 15, class = "WARRIOR" }, --Pummel
+        [119910] = { cooldown = 24, class = "WARLOCK" }, --Spell Lock
+        [19647] = { cooldown = 24, class = "WARLOCK" }, --Spell Lock used from pet bar
+        [132409] = { cooldown = 24, class = "WARLOCK" }, --Spell Lock when from sacrificed felhunter
+        [212619] = { cooldown = 24, class = "WARLOCK" }, --Call Felhunter, Demonology pvp talent
+    }
+end
 
 local defaults = {
     anchor = {
@@ -175,8 +208,8 @@ function NugInterrupts.COMBAT_LOG_EVENT_UNFILTERED( self, event)
     srcGUID, srcName, srcFlags, srcFlags2,
     dstGUID, dstName, dstFlags, dstFlags2,
     spellID, spellName, spellSchool, auraType, amount = CombatLogGetCurrentEventInfo()
-    
-    if eventType == "SPELL_CAST_SUCCESS" then 
+
+    if eventType == "SPELL_CAST_SUCCESS" then
         if bit_band(srcFlags, COMBATLOG_OBJECT_AFFILIATION_MASK) <= AFFILIATION_PARTY and spells[spellID] then
             local timer = FindTimer(srcGUID, spellID) or self:CreateTimer()
             timer:Start(spellID, srcGUID, spells[spellID] )
@@ -216,7 +249,7 @@ local function TimerStart(self, spellID, srcGUID, opts)
     local duration = opts.cooldown
     local class = opts.class
     local unit = NugInterrupts:FindUnitByGUID(srcGUID)
-    
+
     self:SetScript("OnUpdate", TimerOnUpdate)
     self.expiredGhost = nil
     self.isGhost = nil
@@ -292,7 +325,7 @@ local function TimerBecomeGhost(self)
 
     ChangeToGhost(self)
     local opts = self.opts
-    
+
     self.elapsed = 0
     self:SetScript("OnUpdate", TimerGhostOnUpdate)
 end
@@ -311,7 +344,7 @@ end
 local function TimerGhostExpire(self)
     self:SetScript("OnUpdate", TimerOnUpdate)
     self.expiredGhost = true
-    
+
     self:Expire()
     self.isGhost = nil
 end
@@ -321,7 +354,7 @@ function NugInterrupts.CreateTimer(self)
 
     local width = NugInterruptsDB.width
     local height = NugInterruptsDB.height
-    
+
     f:SetWidth(width)
     f:SetHeight(height)
 
@@ -420,7 +453,7 @@ function NugInterrupts.Arrange(self)
         table.insert(ordered_bars, timer)
     end
 
-    table.sort(ordered_bars, bar_sort_func)     
+    table.sort(ordered_bars, bar_sort_func)
     local prev
     local gap = 0
     -- local xgap = 0
@@ -586,7 +619,7 @@ function NugInterrupts:CreateGUI()
                 order = 3,
             },
             toggleGroup = {
-                        
+
                 type = "group",
                 guiInline = true,
                 name = " ",
@@ -685,7 +718,7 @@ function NugInterrupts:CreateGUI()
                         name = " ",
                         order = 2,
                         args = {
-                            
+
                             playerWidth = {
                                 name = "Bar Width",
                                 type = "range",
@@ -726,12 +759,12 @@ function NugInterrupts:CreateGUI()
                                 step = 1,
                             },
 
-                           
+
                         },
                     },
 
                     textGroup = {
-                        
+
                         type = "group",
                         name = " ",
                         order = 3,
@@ -750,7 +783,7 @@ function NugInterrupts:CreateGUI()
                                 values = LSM:HashTable("font"),
                                 dialogControl = "LSM30_Font",
                             },
-                            
+
                             font2 = {
                                 type = "select",
                                 name = "Time Font",
@@ -779,7 +812,7 @@ function NugInterrupts:CreateGUI()
                             },
                         },
                     },
-                    
+
                 },
             }, --
         },
