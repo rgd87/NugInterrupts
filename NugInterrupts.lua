@@ -349,6 +349,14 @@ local function TimerGhostExpire(self)
     self.isGhost = nil
 end
 
+local MakeBorder = function(self, tex, left, right, top, bottom, level)
+    local t = self:CreateTexture(nil,"BORDER",nil,level)
+    t:SetTexture(tex)
+    t:SetPoint("TOPLEFT", self, "TOPLEFT", left, -top)
+    t:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", -right, bottom)
+    return t
+end
+
 function NugInterrupts.CreateTimer(self)
     local f = CreateFrame("Frame",nil, self)
 
@@ -358,13 +366,9 @@ function NugInterrupts.CreateTimer(self)
     f:SetWidth(width)
     f:SetHeight(height)
 
-    local backdrop = {
-        bgFile = "Interface\\Tooltips\\UI-Tooltip-Background", tile = true, tileSize = 0,
-        insets = {left = -2, right = -2, top = -2, bottom = -2},
-    }
-
-    f:SetBackdrop(backdrop)
-    f:SetBackdropColor(0, 0, 0, 1)
+    local border = 2
+    local frameborder = MakeBorder(f, "Interface\\BUTTONS\\WHITE8X8", -border, -border, -border, -border, -2)
+    frameborder:SetVertexColor(0,0,0,0.5)
 
     local ic = CreateFrame("Frame",nil,f)
     ic:SetPoint("TOPLEFT",f,"TOPLEFT", 0, 0)
