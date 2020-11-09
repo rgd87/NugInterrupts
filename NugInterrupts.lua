@@ -78,6 +78,7 @@ else
         [19647] = { cooldown = 24, class = "WARLOCK" }, --Spell Lock used from pet bar
         [132409] = { cooldown = 24, class = "WARLOCK" }, --Spell Lock when from sacrificed felhunter
         [212619] = { cooldown = 24, class = "WARLOCK" }, --Call Felhunter, Demonology pvp talent
+        [89766] = { cooldown = 30, class = "WARLOCK" }, --Axe Toss (Felguard)
     }
 end
 
