@@ -58,6 +58,10 @@ if isClassic then
         [72] = { cooldown = 12, class = "WARRIOR" }, -- Shield Bash
         [1671] = { cooldown = 12, class = "WARRIOR" }, -- Shield Bash
         [1672] = { cooldown = 12, class = "WARRIOR" }, -- Shield Bash
+
+        -- SoD
+        [425609] = { cooldown = 10, class = "PALADIN" }, -- Rebuke
+        [410176] = { cooldown = 10, class = "DRUID" }, -- Skull Bash
     }
 else
     spells = {
